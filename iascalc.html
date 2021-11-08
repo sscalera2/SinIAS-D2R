@@ -1,0 +1,1225 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http:////www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>		
+		<script>		
+			window.onload = function() {
+				init();
+			}
+			
+			var gv_sintype;			
+			
+			//frames for trap laying, structure of FPA|EIAS required 
+			var trapframes = {25:"-38",
+							  24:"-36",
+							  23:"-33",
+							  22:"-30",
+							  21:"-27",
+							  20:"-23",
+							  19:"-20",
+							  18:"-15",
+							  17:"-11",
+							  16:"-5",
+							  15:"0",
+							  14:"8",
+							  13:"15",
+							  12:"24",
+							  11:"34",
+							  10:"47",
+							  9:"61",
+							  8:"79",
+							  7:"100",
+							  6:"129",
+							  5:"167.2", //not sure about this one 
+							  4:"220.3"  //not sure about this one 
+							}
+			
+			var weaponsLOV = [
+				["", 0],
+				["Ancient Axe", 10],
+				["Ancient Sword", 0],
+				["Arbalest", -10],
+				["Archon Staff", 10],
+				["Ashwood Bow", 0],
+				["Ataghan", -20],
+				["Axe", 10],
+				["Balanced Axe", -10],
+				["Balanced Knife", -20],
+				["Ballista", 10],
+				["Balrog Blade", 0],
+				["Balrog Spear", 10],
+				["Barbed Club", 0],
+				["Bardiche", 10],
+				["Bastard Sword", 10],
+				["Battle Axe", 10],
+				["Battle Cestus", -10],
+				["Battle Dart", 0],
+				["Battle Hammer", 20],
+				["Battle Scythe", -10],
+				["Battle Staff", 0],
+				["Battle Sword", 0],
+				["Bearded Axe", 0],
+				["Bec-de-Corbin", 0],
+				["Berserker Axe", 0],
+				["Bill", 0],
+				["Blade Bow", -10],
+				["Blade Talons", -20],
+				["Blade", -10],
+				["Bone Knife", -20],
+				["Bone Wand", -20],
+				["Brandistock", -20],
+				["Broad Axe", 0],
+				["Broad Sword", 0],
+				["Burnt Wand", 0],
+				["Caduceus", -10],
+				["Cedar Bow", 0],
+				["Cedar Staff", 10],
+				["Ceremonial Bow", 10],
+				["Ceremonial Javelin", -10],
+				["Ceremonial Pike", 20],
+				["Ceremonial Spear", 0],
+				["Cestus", 0, 1, 1, 0, 0],
+				["Champion Axe", -10],
+				["Champion Sword", -10],
+				["Chu-Ko-Nu", -60],
+				["Cinquedeas", -20],
+				["Clasped Orb", 0],
+				["Claws", -10],
+				["Claymore", 10],
+				["Cleaver", 10],
+				["Cloudy Sphere", 0],
+				["Club", -10],
+				["Colossus Blade", 5],
+				["Colossus Crossbow", 10],
+				["Colossus Sword", 10],
+				["Colossus Voulge", 10],
+				["Composite Bow", -10],
+				["Conquest Sword", 0],
+				["Crossbow", 0],
+				["Crowbill", -10],
+				["Crusader Bow", 10],
+				["Cryptic Axe", 10],
+				["Cryptic Sword", -10],
+				["Crystal Sword", 0],
+				["Cudgel", -10],
+				["Cutlass", -30],
+				["Dacian Falx", 10],
+				["Dagger", -20],
+				["Decapitator", 10],
+				["Demon Crossbow", -60],
+				["Demon Heart", 0],
+				["Devil Star", 0],
+				["Diamond Bow", 0],
+				["Dimensional Blade", 0],
+				["Dimensional Shard", 10],
+				["Dirk", 0],
+				["Divine Scepter", -10],
+				["Double Axe", 10],
+				["Double Bow", -10],
+				["Eagle Orb", -10],
+				["Edge Bow", 5],
+				["Elder Staff", 0],
+				["Eldritch Orb", -10],
+				["Elegant Blade", -10],
+				["Espandon", 0],
+				["Ettin Axe", 10],
+				["Executioner Sword", 10],
+				["Falcata", 0],
+				["Falchion", 20],
+				["Fanged Knife", -20],
+				["Fascia", 10],
+				["Feral Axe", -15],
+				["Feral Claws", -20],
+				["Flail", -10],
+				["Flamberge", -10],
+				["Flanged Mace", 0],
+				["Flying Axe", 10],
+				["Francisca", 10],
+				["Fuscina", 0],
+				["Ghost Glaive", 20],
+				["Ghost Spear", 0],
+				["Ghost Wand", 10],
+				["Giant Axe", 10],
+				["Giant Sword", 0],
+				["Giant Thresher", -10],
+				["Gladius", 0],
+				["Glaive", 20],
+				["Glorious Axe", 10],
+				["Glowing Orb", -10],
+				["Gnarled Staff", 10],
+				["Gorgon Crossbow", 0],
+				["Gothic Axe", -10],
+				["Gothic Bow", 10],
+				["Gothic Staff", 0],
+				["Gothic Sword", 10],
+				["Grand Matron Bow", 10],
+				["Grand Scepter", 10],
+				["Grave Wand", 0],
+				["Great Axe", -10],
+				["Great Bow", -10],
+				["Great Maul", 20],
+				["Great Pilum", 0],
+				["Great Poleaxe", 0],
+				["Great Sword", 10],
+				["Greater Claws", -20],
+				["Greater Talons", -30],
+				["Grim Scythe", -10],
+				["Grim Wand", 0],
+				["Halberd", 0],
+				["Hand Axe", 0],
+				["Hand Scythe", -10],
+				["Harpoon", -10],
+				["Hatchet Hands", 10],
+				["Hatchet", 0],
+				["Heavenly Stone", -10],
+				["Heavy Crossbow", 10],
+				["Highland Blade", -5],
+				["Holy Water Sprinkler", 10],
+				["Hunter's Bow", -10],
+				["Hurlbat", -10],
+				["Hydra Bow", 10],
+				["Hydra Edge", 10],
+				["Hyperion Javelin", -10],
+				["Hyperion Spear", -10],
+				["Jagged Star", 10],
+				["Jared's Stone", 10],
+				["Javelin", -10],
+				["Jo Staff", -10],
+				["Katar", -10],
+				["Knout", -1],
+				["Kris", -20],
+				["Lance", 20],
+				["Large Axe", -10],
+				["Large Siege Bow", 10],
+				["Legend Spike", -10],
+				["Legend Sword", -15],
+				["Legendary Mallet", 20],
+				["Lich Wand", -20],
+				["Light Crossbow", -10],
+				["Lochaber Axe", 10],
+				["Long Battle Bow", 10],
+				["Long Bow", 0],
+				["Long Staff", 0],
+				["Long Sword", -10],
+				["Long War Bow", 10],
+				["Mace", 0],
+				["Maiden Javelin", -10],
+				["Maiden Pike", 10],
+				["Maiden Spear", 0],
+				["Mancatcher", -20],
+				["Martel de Fer", 20],
+				["Matriarchal Bow", -10],
+				["Matriarchal Javelin", -10],
+				["Matriarchal Pike", 20],
+				["Matriarchal Spear", 0],
+				["Maul", 10],
+				["Mighty Scepter", 0],
+				["Military Axe", -10],
+				["Military Pick", -10],
+				["Mithril Point", 0],
+				["Morning Star", 10],
+				["Mythical Sword", 0],
+				["Naga", 0],
+				["Ogre Axe", 0],
+				["Ogre Maul", 10],
+				["Partizan", 10],
+				["Pellet Bow", -10],
+				["Petrified Wand", 10],
+				["Phase Blade", -30],
+				["Pike", 20],
+				["Pilum", 0],
+				["Poignard", -20],
+				["Poleaxe", 10],
+				["Polished Wand", 0],
+				["Quarterstaff", 0],
+				["Quhab", 0],
+				["Razor Bow", -10],
+				["Reflex Bow", 10],
+				["Reinforced Mace", 0],
+				["Repeating Crossbow", -40],
+				["Rondel", 0],
+				["Rune Bow", 0],
+				["Rune Scepter", 0],
+				["Rune Staff", 20],
+				["Rune Sword", -10],
+				["Runic Talons", -30],
+				["Sabre", -10],
+				["Sacred Globe", -10],
+				["Scepter", 0],
+				["Scimitar", -20],
+				["Scissors Katar", -10],
+				["Scissors Quhab", 0],
+				["Scissors Suwayyah", 0],
+				["Scourge", -10],
+				["Scythe", -10],
+				["Seraph Rod", 10],
+				["Shadow Bow", 0],
+				["Shamshir", -10],
+				["Shillelagh", 0],
+				["Short Battle Bow", 0],
+				["Short Bow", 5],
+				["Short Siege Bow", 0],
+				["Short Spear", 10],
+				["Short Staff", -10],
+				["Short Sword", 0],
+				["Short War Bow", 0],
+				["Siege Crossbow", 0],
+				["Silver-edged Axe", 0],
+				["Simbilan", 10],
+				["Small Crescent", 10],
+				["Smoked Sphere", 0],
+				["Sparkling Ball", 0],
+				["Spear", -10],
+				["Spetum", 0],
+				["Spiculum", 20],
+				["Spider Bow", 5],
+				["Spiked Club", 0],
+				["Stag Bow", 0],
+				["Stalagmite", 10],
+				["Stiletto", -10],
+				["Stygian Pike", 0],
+				["Stygian Pilum", 0],
+				["Suwayyah", 0],
+				["Swirling Crystal", 10],
+				["Tabar", 10],
+				["Thresher", -10],
+				["Throwing Axe", 10],
+				["Throwing Knife", 0],
+				["Throwing Spear", -10],
+				["Thunder Maul", 20],
+				["Tomahawk", 0],
+				["Tomb Wand", -20],
+				["Trident", 0],
+				["Truncheon", -10],
+				["Tulwar", 20],
+				["Tusk Sword", 0],
+				["Twin Axe", 10],
+				["Two-Handed Sword", 0],
+				["Tyrant Club", 0],
+				["Unearthed Wand", 0],
+				["Vortex Orb", 0],
+				["Voulge", 0],
+				["Walking Stick", -10],
+				["Wand", 0],
+				["War Axe", 0],
+				["War Club", 10],
+				["War Dart", -20],
+				["War Fist", 10],
+				["War Fork", -20],
+				["War Hammer", 20],
+				["War Javelin", -10],
+				["War Pike", 20],
+				["War Scepter", -10],
+				["War Scythe", -10],
+				["War Spear", -10],
+				["War Spike", -10],
+				["War Staff", 20],
+				["War Sword", 0],
+				["Ward Bow", 0],
+				["Winged Axe", -10],
+				["Winged Harpoon", -10],
+				["Winged Knife", -20],
+				["Wrist Blade", 0],
+				["Wrist Spike", -10],
+				["Wrist Sword", -10],
+				["Yari", 0],
+				["Yew Wand", 10],
+				["Zweihander", -10]
+			];			
+						
+		
+			function nvl(value1,value2){
+			   if (value1){
+				  return value1;
+				}
+				else{
+				  return value2;
+				}			  
+			}		
+		
+			function show(divname) {							
+				var div = document.getElementById (divname);
+				div.className = div.className.replace("hide","") + " show";
+				div.className = div.className.replace("hidden","") + " shown";
+			}
+			
+			function hide(divname) {	
+				var div = document.getElementById (divname);
+				div.className = div.className.replace("shown","") + " hidden";
+				div.className = div.className.replace("show","") + " hide";				
+			}			
+			
+			function showClaws(){
+				gv_sintype = 'claws';
+				show('clawsDiv');
+				hide('weaponDiv');
+				calculateWSM();
+			}
+			
+			function showWeapon(){
+				gv_sintype = 'weapon';
+				show('weaponDiv');
+				hide('clawsDiv');
+				calculateWSM();		
+			}			
+			
+			function getWeaponWSM(i_weapon_tx){
+				var out;										
+				for (var i = 0, len = weaponsLOV.length; i < len; i++) {
+				  if (weaponsLOV[i][0] == i_weapon_tx) {
+					out = weaponsLOV[i][1];
+					break;
+				  }
+				}										
+				return out;	
+			}
+			
+		
+			//Calculate WSM based on two claws/wsm bug 
+			function calculateWSM(){
+				var wsm;
+			
+				if (gv_sintype == 'claws'){				
+					var mhField = document.getElementById("primaryclaw");
+					var ohField = document.getElementById("offhandclaw");
+					var mh = getWeaponWSM(nvl(mhField.options[mhField.selectedIndex].text,ohField.options[ohField.selectedIndex].text));
+					var oh = getWeaponWSM(nvl(ohField.options[ohField.selectedIndex].text,mhField.options[mhField.selectedIndex].text));									
+					wsm = (mh+oh)/2;
+					
+					if (document.getElementById("wsmbugged").checked) {
+						//WSM bug formula 
+						wsm = wsm + (mh - oh);
+					}			
+					if (!mh && !oh){
+						wsm =0;
+					}
+				}
+				else {
+					var weaponField = document.getElementById("weapontype");					
+					wsm = getWeaponWSM(weaponField.options[weaponField.selectedIndex].text);
+				}				
+				//set WSM
+				document.getElementById("wsm"+gv_sintype).value = wsm;	
+				//generate ias chart  
+				calculateChart();
+			}			
+			
+			
+			function getGearIAS(){
+				return Number(document.getElementById("mhIAS").value)+Number(document.getElementById("gearIAS").value);			
+			}
+			
+			//averaged claw wsm, taking into account wsm bug and slowed 
+			function getWSMCalc(){
+				return Number(document.getElementById("wsm"+gv_sintype).value)+Number(document.getElementById("slowBy").value);			
+			}	
+			
+			//get fanat/bos ias 
+			function getSkillIas(){
+				return Number(document.getElementById("boslvl").value)+Number(document.getElementById("fanlvl").value);
+			}			
+						
+			//does not compensate for gear/weapon ias 
+			function getIasNeededRaw(i_eIAS){
+				var wsmcalc = getWSMCalc();
+				var skilliascalc = getSkillIas();
+				var out = Math.ceil((120*(i_eIAS - skilliascalc + wsmcalc))/Math.abs((120-(i_eIAS - skilliascalc + wsmcalc))));	
+				if (out >= 0){
+					return out;
+				}
+				else {
+					return 0;
+				}
+			}
+				
+			//Compensates for gear/weapon ias 
+			function getIasNeededActual(i_eIAS){
+				var gearias = getGearIAS();
+				var out = getIasNeededRaw(i_eIAS)-gearias;				
+;				if (out >= 0){
+					return out;
+				}
+				else {					
+					return 0;
+				}
+			}	
+
+			//Credits to marvel/legen for the updated d2r trap frame formula 
+			function getAttackFrame(){
+				var skilliascalc = getSkillIas();			
+				var wsmcalc = getWSMCalc();	
+				var gearIAS = getGearIAS();		
+				var eIAS = 120 * gearIAS / (120 + gearIAS);	
+				
+				//1st forumla, 9 frame = 61 eias, 2nd formula, 9 frame = 60 eias... which is correct? 
+				var out = Math.ceil((8* 256) / Math.floor(128* (100-wsmcalc+skilliascalc+eIAS) / 100)) -1;						
+				//var out = Math.ceil(16/(1+(1/100)*(skilliascalc+eIAS-wsmcalc))) -1;
+				return out;			
+			}
+			
+			
+			function calculateChart(){			
+				var currentFrameRate;
+										
+				//build/clear old divs 
+				var frameTableDiv = document.getElementById("frameTable");
+				//clear old reuslts 
+				frameTableDiv.innerHTML = null;					
+				var table = document.createElement('TABLE');
+				table.border = '2px white';
+		
+				//table body
+				var tableBody = document.createElement('TBODY');
+				table.appendChild(tableBody);		
+				//header
+				var tr = document.createElement('TR');
+				tableBody.appendChild(tr);		
+				var td = document.createElement('TD');
+				td.width = '40';
+				td.className = 'boldText';
+				td.appendChild(document.createTextNode('FPA'));
+				tr.appendChild(td);	
+				var td = document.createElement('TD');
+				td.width = '140';
+				td.className = 'boldText';				
+				td.appendChild(document.createTextNode('Total IAS Required'));
+				tr.appendChild(td);	
+				var td = document.createElement('TD');
+				td.width = '180';
+				td.className = 'boldText';				
+				td.appendChild(document.createTextNode('Remaining IAS Required'));
+				tr.appendChild(td);	
+				
+					
+				//loop through frame array
+				for (var i = 25; i >= 4; i--) {	
+					var totalIASneeded = getIasNeededRaw(trapframes[i]);
+					var IASneeded = getIasNeededActual(trapframes[i]);
+								
+					//Unrealistic IAS, breaks formula, dont show row 
+					if (totalIASneeded >= 500){
+						break;
+					}																
+					//dont show anything slower than 15 frames for now, unless slow turned on 
+					if (i > 15 && Number(document.getElementById("slowBy").value) == 0) {
+						continue;
+					}
+					
+					var tr = document.createElement('TR');
+					tableBody.appendChild(tr);	
+					
+					//columns 
+					var td = document.createElement('TD');
+						  td.appendChild(document.createTextNode(i));
+						  if (IASneeded > 0){
+							td.className = "RedText";
+						  }			
+						  else {
+							td.className = "";
+						  }
+						  tr.appendChild(td);	
+						  
+					var td = document.createElement('TD');
+						  td.appendChild(document.createTextNode(totalIASneeded));
+						  if (IASneeded > 0){
+							td.className = "RedText";
+						  }		
+						  else {
+							td.className = "";
+						  }						  
+						  tr.appendChild(td);						  
+	
+					var td = document.createElement('TD');
+						  td.appendChild(document.createTextNode(IASneeded));
+						  if (IASneeded > 0){
+							td.className = "RedText";
+						  }		
+						  else {
+							td.className = "";
+						  }						  
+						  tr.appendChild(td);
+
+				}				
+													
+				frameTableDiv.appendChild(table);
+							
+				currentFrameRate = getAttackFrame();
+				var attackperSec =  (25/currentFrameRate).toFixed(2);
+				document.getElementById("FPALabel").innerHTML = currentFrameRate + ' FPA ('+attackperSec+' attacks per second)';
+								
+				//Give some feedback to user
+				var feedbackmsg;				
+				
+				if (currentFrameRate >=13){
+					feedbackmsg = "Your Sassy is slow as shit.  Might I suggest using TMC..?";
+				}
+				if (currentFrameRate <=13){
+					feedbackmsg = "Your Sassy is pretty slow.  My grandma lays traps faster!";
+				}
+				if (currentFrameRate <=11){
+					feedbackmsg = "Ok, Your Sassy is getting there.  But not quick enough!!";
+				}	
+				if (currentFrameRate ==9){
+					feedbackmsg = "Nice, your Sassy is pretty quick!!  This was max speed in legacy...";
+				}		
+				if (currentFrameRate ==8){
+					feedbackmsg = "Wow!  Your Sassy is fast!! Faster than possible in legacy";
+				}		
+				if (currentFrameRate ==7){
+					feedbackmsg = "Wow!  Your Sassy is really fast!!  Pls don't fireblast me";
+				}	
+				if (currentFrameRate ==6){
+					feedbackmsg = "Wow!  Your Sassy is insanely fast!!  I wouldn't step into the moor with her...";
+				}	
+				if (currentFrameRate ==5){
+					feedbackmsg = "5 Frame Trap Laying?  Guess you took the TMC suggestion seriously.  You have been reported!!!";				
+				}		
+				if (currentFrameRate < 5){
+					feedbackmsg = "I don't believe your Sassy is actually this fast.  Put in some realistic numbers ya lil scrawnlet";					
+				}						
+				//set feedback label 		
+				document.getElementById("FeedbackLabel").innerHTML = feedbackmsg;			
+			}
+			
+											
+			function init(){
+			//set up radio buttons 
+			var rad = document.FormSinType.sintype;
+				var prev = null;
+				for(var i = 0; i < rad.length; i++) {
+					rad[i].onclick = function () {
+						//(prev)? console.log(prev.value):null;
+						if(this !== prev) {						
+							prev = this;
+							if (this.value == 'claws') {
+								showClaws();
+							}
+							else {
+								showWeapon();
+							}							
+						}
+						
+					};
+				
+				}
+				//c/c setup by default 
+				document.getElementById("claws").checked = true;	
+				showClaws();
+			}				
+										
+		</script>
+		
+		<style>
+
+		
+		body {
+	
+			margin: 15px;
+			visibility: visible;
+			background-image: url("images/bg3.jpg");
+			/*background: black url("images/bg3.jpg") no-repeat bottom right ;
+			background-color: black;
+			background-size: 75%;
+			*/
+			color: white;
+		}
+		
+
+	
+		.SpacedElement {
+			padding-left: 5px;
+			padding-right: 20px;
+		}
+		
+		.TitleFont {
+			font-size: 28px;	
+			font-weight: bold;
+			
+		}
+		
+		.FeedbackFont {
+			font-size: 24px;	
+			font-weight: bold;
+			color: red;
+		}
+		
+		.RedText {
+
+			background-color: red;
+
+		}
+				
+		.boldText {
+			font-weight: bold;
+		}
+							
+			
+		.hidden {
+			visibility: hidden;
+			overflow: hidden;
+			max-height: 0;			
+		}
+		
+		.shown {					
+			visibility: visible;			
+			max-height: 1000px;		
+		}		
+	
+		.Fieldlabel{
+			display: inline-block;
+			width: 115px;
+			text-align: right;
+		}
+		
+		.BigFieldlabel{
+			display: inline-block;
+			width: 232px;
+			text-align: right;
+		}	
+
+		.SmallFieldlabel{
+			display: inline-block;
+			width: 85px;
+			text-align: right;
+		}	
+		
+		.SmallerFieldlabel{
+			display: inline-block;
+			width: 55px;
+			text-align: right;
+		}			
+	
+		.Field {
+			width: 190px;		  
+		}
+		
+		.IASField {
+			width: 40px;;
+		}
+		
+		.SkillLvlSelect {
+			width: 47px;
+		}		
+				
+					
+		.Field, 
+		.IASField,
+		.SkillLvlSelect {
+			background: #1a1515;		
+			border-radius: 3px;	
+			box-shadow: 0 0 0 1px #fff;
+			-webkit-box-shadow: 0 0 0 1px #fff;			
+			border: none;
+			color: #fff;
+		
+			margin: 0;
+			outline: 0;
+			padding: 4px;
+			}		
+
+		.Field,
+		.SkillLvlSelect{
+			cursor: pointer;
+		}
+
+		.WSM {
+			cursor: default;
+			color: gray;
+			box-shadow: 0 0 0 1px gray;
+			-webkit-box-shadow: 0 0 0 1px gray;				
+		}
+						
+				
+		input::-webkit-inner-spin-button {
+		  -webkit-appearance: none;
+		  margin: 0;
+		}				
+		
+		</style>
+	</head>
+	<body>
+		<div class="">
+			<div class="TitleFont">
+				Assassin Trap Laying IAS Calculator (D2R)
+			</div>
+			<br/>
+			<br/>			
+			<div class="">
+				My Assassin Uses:
+			</div>
+			<form name="FormSinType">
+			  <input type="radio" id="claws" name="sintype" value="claws">
+			  <label for="claws">Claws</label>
+			  <input type="radio" id="weapon" name="sintype" value="weapon">
+			  <label for="claws">Weapon/Shield</label><br>
+			</form>	
+			<br/>
+			<br/>							
+			<div id="clawsDiv">	
+				<span class="">			
+				<label class="Fieldlabel" for="primaryclaw">Main Hand Claw: </label>
+				<select class="Field" name=”primaryclaw” id="primaryclaw" onChange=calculateWSM()>
+					<option value=""></option>		
+					<option value="1">Battle Cestus</option>				
+					<option value="2">Blade Talons</option>
+					<option value="3">Cestus</option>
+					<option value="4">Claws</option>
+					<option value="5">Fascia</option>		
+					<option value="6">Feral Claws</option>				
+					<option value="7">Greater Claws</option>	
+					<option value="8">Greater Talons</option>				
+					<option value="9">Hand Scythe</option>
+					<option value="10">Hatchet Hands</option>
+					<option value="11">Katar</option>
+					<option value="12">Quhab</option>	
+					<option value="13">Runic Talons</option>				
+					<option value="14">Scissors Katar</option>
+					<option value="15">Scissors Quhab</option>	
+					<option value="16">Scissors Suwayyah</option>				
+					<option value="17">Suwayyah</option>				
+					<option value="18">War Fist</option>
+					<option value="19">Wrist Blade</option>
+					<option value="20">Wrist Spike</option>	
+					<option value="21">Wrist Sword</option>	
+				</select>		
+				</span>						
+				<span class="">
+				<label class="Fieldlabel" for="offhandclaw">Offhand Claw: </label>
+				<select class="Field" name=”offhandclaw” id="offhandclaw" onChange=calculateWSM()>
+					<option value=""></option>		
+					<option value="1">Battle Cestus</option>				
+					<option value="2">Blade Talons</option>
+					<option value="3">Cestus</option>
+					<option value="4">Claws</option>
+					<option value="5">Fascia</option>		
+					<option value="6">Feral Claws</option>				
+					<option value="7">Greater Claws</option>	
+					<option value="8">Greater Talons</option>				
+					<option value="9">Hand Scythe</option>
+					<option value="10">Hatchet Hands</option>
+					<option value="11">Katar</option>
+					<option value="12">Quhab</option>	
+					<option value="13">Runic Talons</option>				
+					<option value="14">Scissors Katar</option>
+					<option value="15">Scissors Quhab</option>	
+					<option value="16">Scissors Suwayyah</option>				
+					<option value="17">Suwayyah</option>				
+					<option value="18">War Fist</option>
+					<option value="19">Wrist Blade</option>
+					<option value="20">Wrist Spike</option>	
+					<option value="21">Wrist Sword</option>	
+				</select>	
+				</span>					
+				<span class="">
+					<label class="Fieldlabel" for="wsmbugged"> WSM Bugged</label>
+					<input type="checkbox" id="wsmbugged" name="wsmbugged" onChange=calculateWSM()></input>
+				</span>	
+				<span class="">
+					<label class="SmallerFieldlabel" for="wsmclaws">WSM: </label>
+					<input type="text" id="wsmclaws" name="wsmclaws" class="IASField WSM" disabled></input>
+				</span>					
+			</div>		
+			
+			<div id="weaponDiv">	
+				<span class="">			
+				<label class="Fieldlabel" for="weapon">Weapon: </label>
+				<select class="Field" name=”weapon” id="weapontype" onChange=calculateWSM()>
+					<option value=""></option>					
+					<option value="1">Ancient Axe</option>
+					<option value="2">Ancient Sword</option>
+					<option value="3">Arbalest</option>
+					<option value="4">Archon Staff</option>
+					<option value="6">Ataghan</option>
+					<option value="7">Axe</option>
+					<option value="8">Balanced Axe</option>
+					<option value="9">Balanced Knife</option>
+					<option value="10">Ballista</option>
+					<option value="11">Balrog Blade</option>
+					<option value="12">Balrog Spear</option>
+					<option value="13">Barbed Club</option>
+					<option value="14">Bardiche</option>
+					<option value="15">Bastard Sword</option>
+					<option value="16">Battle Axe</option>
+					<option value="18">Battle Dart</option>
+					<option value="19">Battle Hammer</option>
+					<option value="20">Battle Scythe</option>
+					<option value="21">Battle Staff</option>
+					<option value="22">Battle Sword</option>
+					<option value="23">Bearded Axe</option>
+					<option value="24">Bec-de-Corbin</option>
+					<option value="25">Berserker Axe</option>
+					<option value="26">Bill</option>
+					<option value="27">Blade Bow</option>
+					<option value="29">Blade</option>
+					<option value="30">Bone Knife</option>
+					<option value="31">Bone Wand</option>
+					<option value="32">Brandistock</option>
+					<option value="33">Broad Axe</option>
+					<option value="34">Broad Sword</option>
+					<option value="35">Burnt Wand</option>
+					<option value="36">Caduceus</option>
+					<option value="37">Cedar Bow</option>
+					<option value="38">Cedar Staff</option>
+					<option value="44">Champion Axe</option>
+					<option value="45">Champion Sword</option>
+					<option value="46">Chu-Ko-Nu</option>
+					<option value="47">Cinquedeas</option>
+					<option value="50">Claymore</option>
+					<option value="51">Cleaver</option>
+					<option value="53">Club</option>
+					<option value="54">Colossus Blade</option>
+					<option value="55">Colossus Crossbow</option>
+					<option value="56">Colossus Sword</option>
+					<option value="57">Colossus Voulge</option>
+					<option value="58">Composite Bow</option>
+					<option value="59">Conquest Sword</option>
+					<option value="60">Crossbow</option>
+					<option value="61">Crowbill</option>
+					<option value="62">Crusader Bow</option>
+					<option value="63">Cryptic Axe</option>
+					<option value="64">Cryptic Sword</option>
+					<option value="65">Crystal Sword</option>
+					<option value="67">Cudgel</option>
+					<option value="68">Cutlass</option>
+					<option value="69">Dacian Falx</option>
+					<option value="70">Dagger</option>
+					<option value="71">Decapitator</option>
+					<option value="72">Demon Crossbow</option>
+					<option value="74">Devil Star</option>
+					<option value="75">Diamond Bow</option>
+					<option value="76">Dimensional Blade</option>
+					<option value="78">Dirk</option>
+					<option value="79">Divine Scepter</option>
+					<option value="80">Double Axe</option>
+					<option value="81">Double Bow</option>
+					<option value="83">Edge Bow</option>
+					<option value="84">Elder Staff</option>
+					<option value="86">Elegant Blade</option>
+					<option value="87">Espandon</option>
+					<option value="88">Ettin Axe</option>
+					<option value="89">Executioner Sword</option>
+					<option value="90">Falcata</option>
+					<option value="91">Falchion</option>
+					<option value="92">Fanged Knife</option>
+					<option value="94">Feral Axe</option>
+					<option value="96">Flail</option>
+					<option value="97">Flamberge</option>
+					<option value="98">Flanged Mace</option>
+					<option value="99">Flying Axe</option>
+					<option value="100">Francisca</option>
+					<option value="101">Fuscina</option>
+					<option value="102">Ghost Glaive</option>
+					<option value="103">Ghost Spear</option>
+					<option value="104">Ghost Wand</option>
+					<option value="105">Giant Axe</option>
+					<option value="106">Giant Sword</option>
+					<option value="107">Giant Thresher</option>
+					<option value="108">Gladius</option>
+					<option value="109">Glaive</option>
+					<option value="110">Glorious Axe</option>
+					<option value="112">Gnarled Staff</option>
+					<option value="113">Gorgon Crossbow</option>
+					<option value="114">Gothic Axe</option>
+					<option value="115">Gothic Bow</option>
+					<option value="116">Gothic Staff</option>
+					<option value="117">Gothic Sword</option>
+					<option value="119">Grand Scepter</option>
+					<option value="120">Grave Wand</option>
+					<option value="121">Great Axe</option>
+					<option value="122">Great Bow</option>
+					<option value="123">Great Maul</option>
+					<option value="124">Great Pilum</option>
+					<option value="125">Great Poleaxe</option>
+					<option value="126">Great Sword</option>
+					<option value="129">Grim Scythe</option>
+					<option value="130">Grim Wand</option>
+					<option value="131">Halberd</option>
+					<option value="132">Hand Axe</option>
+					<option value="134">Harpoon</option>
+					<option value="136">Hatchet</option>
+					<option value="138">Heavy Crossbow</option>
+					<option value="139">Highland Blade</option>
+					<option value="140">Holy Water Sprinkler</option>
+					<option value="141">Hunter's Bow</option>
+					<option value="142">Hurlbat</option>
+					<option value="143">Hydra Bow</option>
+					<option value="144">Hydra Edge</option>
+					<option value="145">Hyperion Javelin</option>
+					<option value="146">Hyperion Spear</option>
+					<option value="147">Jagged Star</option>
+					<option value="149">Javelin</option>
+					<option value="150">Jo Staff</option>
+					<option value="152">Knout</option>
+					<option value="153">Kris</option>
+					<option value="154">Lance</option>
+					<option value="155">Large Axe</option>
+					<option value="156">Large Siege Bow</option>
+					<option value="157">Legend Spike</option>
+					<option value="158">Legend Sword</option>
+					<option value="159">Legendary Mallet</option>
+					<option value="160">Lich Wand</option>
+					<option value="161">Light Crossbow</option>
+					<option value="162">Lochaber Axe</option>
+					<option value="163">Long Battle Bow</option>
+					<option value="164">Long Bow</option>
+					<option value="165">Long Staff</option>
+					<option value="166">Long Sword</option>
+					<option value="167">Long War Bow</option>
+					<option value="168">Mace</option>
+					<option value="172">Mancatcher</option>
+					<option value="173">Martel de Fer</option>
+					<option value="178">Maul</option>
+					<option value="179">Mighty Scepter</option>
+					<option value="180">Military Axe</option>
+					<option value="181">Military Pick</option>
+					<option value="182">Mithril Point</option>
+					<option value="183">Morning Star</option>
+					<option value="184">Mythical Sword</option>
+					<option value="185">Naga</option>
+					<option value="186">Ogre Axe</option>
+					<option value="187">Ogre Maul</option>
+					<option value="188">Partizan</option>
+					<option value="189">Pellet Bow</option>
+					<option value="190">Petrified Wand</option>
+					<option value="191">Phase Blade</option>
+					<option value="192">Pike</option>
+					<option value="193">Pilum</option>
+					<option value="194">Poignard</option>
+					<option value="195">Poleaxe</option>
+					<option value="196">Polished Wand</option>
+					<option value="197">Quarterstaff</option>
+					<option value="199">Razor Bow</option>
+					<option value="201">Reinforced Mace</option>
+					<option value="202">Repeating Crossbow</option>
+					<option value="203">Rondel</option>
+					<option value="204">Rune Bow</option>
+					<option value="205">Rune Scepter</option>
+					<option value="206">Rune Staff</option>
+					<option value="207">Rune Sword</option>
+					<option value="209">Sabre</option>
+					<option value="211">Scepter</option>
+					<option value="212">Scimitar</option>
+					<option value="216">Scourge</option>
+					<option value="217">Scythe</option>
+					<option value="218">Seraph Rod</option>
+					<option value="219">Shadow Bow</option>
+					<option value="220">Shamshir</option>
+					<option value="221">Shillelagh</option>
+					<option value="222">Short Battle Bow</option>
+					<option value="223">Short Bow</option>
+					<option value="224">Short Siege Bow</option>
+					<option value="225">Short Spear</option>
+					<option value="226">Short Staff</option>
+					<option value="227">Short Sword</option>
+					<option value="228">Short War Bow</option>
+					<option value="229">Siege Crossbow</option>
+					<option value="230">Silver-edged Axe</option>
+					<option value="231">Simbilan</option>
+					<option value="232">Small Crescent</option>
+					<option value="235">Spear</option>
+					<option value="236">Spetum</option>
+					<option value="237">Spiculum</option>
+					<option value="238">Spider Bow</option>
+					<option value="239">Spiked Club</option>
+					<option value="241">Stalagmite</option>
+					<option value="242">Stiletto</option>
+					<option value="243">Stygian Pike</option>
+					<option value="244">Stygian Pilum</option>
+					<option value="247">Tabar</option>
+					<option value="248">Thresher</option>
+					<option value="249">Throwing Axe</option>
+					<option value="250">Throwing Knife</option>
+					<option value="251">Throwing Spear</option>
+					<option value="252">Thunder Maul</option>
+					<option value="253">Tomahawk</option>
+					<option value="254">Tomb Wand</option>
+					<option value="255">Trident</option>
+					<option value="256">Truncheon</option>
+					<option value="257">Tulwar</option>
+					<option value="258">Tusk Sword</option>
+					<option value="259">Twin Axe</option>
+					<option value="260">Two-Handed Sword</option>
+					<option value="261">Tyrant Club</option>
+					<option value="262">Unearthed Wand</option>
+					<option value="264">Voulge</option>
+					<option value="265">Walking Stick</option>
+					<option value="266">Wand</option>
+					<option value="267">War Axe</option>
+					<option value="268">War Club</option>
+					<option value="269">War Dart</option>
+					<option value="271">War Fork</option>
+					<option value="272">War Hammer</option>
+					<option value="273">War Javelin</option>
+					<option value="274">War Pike</option>
+					<option value="275">War Scepter</option>
+					<option value="276">War Scythe</option>
+					<option value="277">War Spear</option>
+					<option value="278">War Spike</option>
+					<option value="279">War Staff</option>
+					<option value="280">War Sword</option>
+					<option value="281">Ward Bow</option>
+					<option value="282">Winged Axe</option>
+					<option value="283">Winged Harpoon</option>
+					<option value="284">Winged Knife</option>
+					<option value="288">Yari</option>
+					<option value="289">Yew Wand</option>
+					<option value="290">Zweihander</option>
+				</select>	
+				</span>	
+				<span class="">
+					<label class="Fieldlabel"  for="wsmweapon">WSM: </label>
+					<input type="text" id="wsmweapon" name="wsmweapon" class="IASField WSM" disabled></input>
+				</span>					
+			</div>		
+			<br/>
+			<div id="iasDiv">	
+				<span class="">			
+					<label class="Fieldlabel" id="WeaponIASLabel">Main Hand IAS: </label>
+					<input type="number" min="0" oninput="validity.valid||(value='');"  class="IASField"  id="mhIAS" onChange=calculateChart()></input>						
+					<label class="SmallFieldlabel" id="GearIASLabel">Gear IAS: </label>
+					<input type="number" min="0" oninput="validity.valid||(value='');" class="IASField" id="gearIAS" onChange=calculateChart()></input>						
+					<label class="Fieldlabel">Slowed By: </label>
+					<input type="number" min="0" max="89" oninput="validity.valid||(value='');" class="IASField" id="slowBy" onChange=calculateChart()></input>	
+					<label class="">%</label>
+				</span>							
+			</div>	
+			<br/>			
+			<div id="bosDiv">	
+				<span class="">			
+					<label class="Fieldlabel" for="boslvl">BOS Level: </label>
+					<select class="SkillLvlSelect" name=”boslvl” id="boslvl" onChange=calculateChart()>
+						<option value=""></option>		
+						<option value="0">0</option>
+						<option value="21">1</option>
+						<option value="27">2</option>
+						<option value="31">3</option>
+						<option value="34">4</option>
+						<option value="37">5</option>
+						<option value="39">6</option>
+						<option value="41">7</option>
+						<option value="42">8</option>
+						<option value="44">9</option>
+						<option value="45">10</option>
+						<option value="46">11</option>
+						<option value="47">12</option>
+						<option value="48">13</option>
+						<option value="49">14</option>
+						<option value="50">15</option>
+						<option value="51">16</option>
+						<option value="51">17</option>
+						<option value="51">18</option>
+						<option value="52">19</option>
+						<option value="52">20</option>
+						<option value="53">21</option>
+						<option value="53">22</option>
+						<option value="54">23</option>
+						<option value="54">24</option>
+						<option value="54">25</option>
+						<option value="55">26</option>
+						<option value="55">27</option>
+						<option value="55">28</option>
+						<option value="55">29</option>
+						<option value="55">30</option>
+						<option value="56">31</option>
+						<option value="56">32</option>
+						<option value="56">33</option>
+						<option value="57">34</option>
+						<option value="57">35</option>
+						<option value="57">36</option>
+						<option value="57">37</option>
+						<option value="57">38</option>
+						<option value="57">39</option>	
+						<option value="58">40</option>
+						<option value="58">41</option>
+						<option value="58">42</option>
+						<option value="58">43</option>
+						<option value="58">44</option>
+						<option value="58">45</option>
+						<option value="58">46</option>
+						<option value="58">47</option>
+						<option value="58">48</option>
+						<option value="59">49</option>
+						<option value="59">50</option>					
+					</select>															
+				</span>			
+				<span class="">			
+					<label class="SmallFieldlabel" for="fanlvl">Fanat Level: </label>
+					<select class="SkillLvlSelect" name=”fanlvl” id="fanlvl" onChange=calculateChart()>
+						<option value=""></option>		
+						<option value="0">0</option>
+						<option value="14">1</option>
+						<option value="18">2</option>
+						<option value="20">3</option>
+						<option value="23">4</option>
+						<option value="25">5</option>
+						<option value="26">6</option>
+						<option value="27">7</option>
+						<option value="28">8</option>
+						<option value="29">9</option>
+						<option value="30">10</option>
+						<option value="31">11</option>
+						<option value="31">12</option>
+						<option value="32">13</option>
+						<option value="33">14</option>
+						<option value="33">15</option>
+						<option value="34">16</option>
+						<option value="34">17</option>
+						<option value="34">18</option>
+						<option value="34">19</option>
+						<option value="35">20</option>
+						<option value="35">21</option>
+						<option value="35">22</option>
+						<option value="36">23</option>
+						<option value="36">24</option>
+						<option value="36">25</option>
+						<option value="36">26</option>
+						<option value="37">27</option>
+						<option value="37">28</option>
+						<option value="37">29</option>
+						<option value="37">30</option>
+						<option value="37">31</option>
+						<option value="37">32</option>
+						<option value="37">33</option>
+						<option value="37">34</option>
+						<option value="38">35</option>
+						<option value="38">36</option>
+						<option value="38">37</option>
+						<option value="38">38</option>
+						<option value="38">39</option>	
+						<option value="38">40</option>
+						<option value="38">41</option>
+						<option value="38">42</option>
+						<option value="38">43</option>
+						<option value="38">44</option>
+						<option value="39">45</option>
+						<option value="39">46</option>
+						<option value="39">47</option>
+						<option value="39">48</option>
+						<option value="39">49</option>
+						<option value="39">50</option>					
+					</select>															
+				</span>					
+			</div>																							
+		</div>
+		<br/>
+		<br/>
+		<button onclick = calculateChart()>Calculate Attack Frames</button>
+		<br/>
+		<br/>
+		<br/>		
+		<div>
+			<label class="boldText">Current Attack Speed:</label>
+			<label class="" id="FPALabel"></label>
+		</div>
+
+		<div id="frameTable"></div>	
+		<br/>
+		<br/>
+		<div>
+			<label class="FeedbackFont" id="FeedbackLabel"></label>
+		</div>		
+	
+	</body>
+
+
+
+</html>
